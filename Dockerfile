@@ -8,7 +8,7 @@ ENV CRON_LOG_LEVEL=8
 
 # PostgreSQL 10 repository install
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y wget lsb-release && \
+    apt-get install -y wget lsb-release gnupg && \
     wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - && \
     echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 
@@ -22,6 +22,7 @@ RUN apt-get update && apt-get upgrade -y && \
 ADD autopostgresqlbackup.conf /etc/default/autopostgresqlbackup
 ADD autopostgresqlbackup /usr/sbin/autopostgresqlbackup
 RUN chmod 755 /usr/sbin/autopostgresqlbackup
+RUN mkfifo /var/spool/postfix/public/pickup
 
 # Configure entrypoint
 ADD docker-entrypoint.sh /docker-entrypoint.sh
